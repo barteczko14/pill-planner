@@ -34,7 +34,7 @@ const Checkbox = ({ id, label }) => {
 			if (clickTime) {
 				const now = new Date()
 				const clickDate = new Date(clickTime)
-				clickDate.setDate(clickDate.getDate() + 6) 
+				clickDate.setDate(clickDate.getDate() + 3)
 				if (now >= clickDate) {
 					setChecked(false)
 					checkboxRef.set(false)
