@@ -1,2 +1,4 @@
-# Pill Planner is an app that helps you monitor your disease status
+# Pill Planner
+
+This app helps you monitor your disease status
 
