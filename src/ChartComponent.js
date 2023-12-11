@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { initializeApp } from 'firebase/app'
 import { getDatabase, ref, set, get } from 'firebase/database'
 import ApexCharts from 'react-apexcharts'
-import Button from './Button'
+import Button from './components/Button'
 import classes from './ChartComponent.module.css'
 import firebaseConfig from './firebaseConfig'
 
@@ -116,7 +116,7 @@ const ChartComponent = () => {
 						className={classes.formInput}
 						id='inr'
 						value={value}
-						onChange={e => setValue((e.target.value).replace(',', '.'))}
+						onChange={e => setValue(e.target.value.replace(',', '.'))}
 					/>
 					<label htmlFor='inr' className={classes.formLabel}>
 						INR
@@ -132,8 +132,8 @@ const ChartComponent = () => {
 					))}
 				</select>
 				<div className={classes.buttonsContainer}>
-					<Button onClick={updateData} btnText='Dodaj'></Button>
-					<Button onClick={deleteData} btnText='Usuń dane'></Button>
+					<Button onClick={updateData} >Dodaj</Button>
+					<Button onClick={deleteData} >Usuń dane</Button>
 				</div>
 			</div>
 		</div>

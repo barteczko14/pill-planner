@@ -1,51 +1,60 @@
-import React, { useState, useEffect} from 'react'
-import { initializeApp } from 'firebase/app'
-import { getDatabase, ref, onValue } from 'firebase/database'
-import Menu from './Menu'
-import firebaseConfig from './firebaseConfig'
+import React, { useState, useEffect } from 'react'
+import Menu from './components/Menu'
 import ChartComponent from './ChartComponent'
-import Counter from './Counter'
-import LoadingPage from './LoadingPage'
-
-const app = initializeApp(firebaseConfig)
-const database = getDatabase(app)
+import Counter from './components/Counter'
+import LoadingPage from './components/LoadingPage'
 
 const App = () => {
-	const [loading, setLoading] = useState(true)
+	const [fetching, setIsFetching] = useState(false)
 	const [sum, setSum] = useState(0)
 	const [average, setAverage] = useState(0)
+	const [countersData, setCountersData] = useState({})
+
+	const daysOrder = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela']
 
 	useEffect(() => {
-		const counterRef = ref(database, 'counters')
-		onValue(counterRef, snapshot => {
-			const counters = snapshot.val()
-			const sum = Object.values(counters).reduce((accumulator, value) => accumulator + value, 0)
-			setSum(sum)
-			setAverage((sum / 7).toFixed(2))
-			if (counters) {
-				setLoading(false)
+		async function fetchData() {
+			setIsFetching(true)
+			try {
+				const response = await fetch('https://pill-planner-default-rtdb.firebaseio.com/counters.json')
+				const responseData = await response.json()
+				const correctOrder = {}
+				daysOrder.forEach(day => {
+					correctOrder[day] = responseData[day]
+				})
+				setCountersData(correctOrder)
+				const sum = Object.values(responseData).reduce((accumulator, value) => accumulator + value, 0)
+				setSum(sum)
+				setAverage((sum / 7).toFixed(2))
+				if (!response.ok) {
+					throw new Error('Error')
+				}
+			} catch (error) {
+				alert('Błąd pobierania danych!')
 			}
-		})
-	}, [sum, average])
+			setIsFetching(false)
+		}
+		fetchData()
+	}, [])
 
 	return (
-		<div>
-			{loading ? (
+		<>
+			{fetching ? (
 				<LoadingPage></LoadingPage>
 			) : (
 				<>
 					<Menu sum={sum} average={average}></Menu>
-					<Counter counterId='poniedziałek' />
-					<Counter counterId='wtorek' />
-					<Counter counterId='środa' />
-					<Counter counterId='czwartek' />
-					<Counter counterId='piątek' />
-					<Counter counterId='sobota' />
-					<Counter counterId='niedziela' />
+					<div className='flex flex-wrap justify-center'>
+						{Object.entries(countersData).map(([day, count]) => (
+							<Counter key={day} counterData={count}>
+								{day}
+							</Counter>
+						))}
+					</div>
 					<ChartComponent></ChartComponent>
 				</>
 			)}
-		</div>
+		</>
 	)
 }
 
