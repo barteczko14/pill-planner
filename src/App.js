@@ -1,61 +1,49 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Menu from './components/Menu'
 import ChartComponent from './ChartComponent'
 import Counter from './components/Counter'
 import LoadingPage from './components/LoadingPage'
+import { fetchCountersData } from './util/http'
+import { useQuery } from '@tanstack/react-query'
+import ErrorBlock from './components/ErrorBlock'
 
 const App = () => {
-	const [fetching, setIsFetching] = useState(false)
-	const [sum, setSum] = useState(0)
-	const [average, setAverage] = useState(0)
-	const [countersData, setCountersData] = useState({})
+	const { data, isPending, isError } = useQuery({
+		queryKey: ['counters'],
+		queryFn: fetchCountersData,
+	})
 
-	const daysOrder = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela']
+	let content
 
-	useEffect(() => {
-		async function fetchData() {
-			setIsFetching(true)
-			try {
-				const response = await fetch('https://pill-planner-default-rtdb.firebaseio.com/counters.json')
-				const responseData = await response.json()
-				const correctOrder = {}
-				daysOrder.forEach(day => {
-					correctOrder[day] = responseData[day]
-				})
-				setCountersData(correctOrder)
-				const sum = Object.values(responseData).reduce((accumulator, value) => accumulator + value, 0)
-				setSum(sum)
-				setAverage((sum / 7).toFixed(2))
-				if (!response.ok) {
-					throw new Error('Error')
-				}
-			} catch (error) {
-				alert('Błąd pobierania danych!')
-			}
-			setIsFetching(false)
-		}
-		fetchData()
-	}, [])
+	if (isPending) {
+		content = <LoadingPage></LoadingPage>
+	}
+	if (isError) {
+		content = <ErrorBlock title='Błąd' message='Nie udało się załadować danych' />
+	}
+	if (data) {
+		const daysOrder = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela']
 
-	return (
-		<>
-			{fetching ? (
-				<LoadingPage></LoadingPage>
-			) : (
-				<>
-					<Menu sum={sum} average={average}></Menu>
-					<div className='flex flex-wrap justify-center'>
-						{Object.entries(countersData).map(([day, count]) => (
-							<Counter key={day} counterData={count}>
-								{day}
-							</Counter>
-						))}
-					</div>
-					<ChartComponent></ChartComponent>
-				</>
-			)}
-		</>
-	)
+		const correctOrder = {}
+		daysOrder.forEach(day => {
+			correctOrder[day] = data[day]
+		})
+
+		content = (
+			<>
+				<Menu counterData={correctOrder}></Menu>
+				<div className='flex flex-wrap justify-center'>
+					{Object.entries(correctOrder).map(([day, count]) => (
+						<Counter key={day} counterData={count}>
+							{day}
+						</Counter>
+					))}
+				</div>
+				<ChartComponent></ChartComponent>
+			</>
+		)
+	}
+	return <>{content}</>
 }
 
 export default App

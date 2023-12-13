@@ -1,4 +1,3 @@
-import classes from './Checkbox.module.css'
 import React, { useState, useEffect } from 'react'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/database'
@@ -6,7 +5,7 @@ import firebaseConfig from './firebaseConfig'
 
 firebase.initializeApp(firebaseConfig)
 
-const Checkbox = ({ id, label }) => {
+const Checkbox = ({ id }) => {
 	const [checked, setChecked] = useState(false)
 	const [clickTime, setClickTime] = useState(null)
 	const checkboxRef = firebase.database().ref(`checkboxes/${id}`)
@@ -57,17 +56,14 @@ const Checkbox = ({ id, label }) => {
 	}
 
 	return (
-		<div className={classes['checkbox-position']}>
-			<label className={classes['checkbox-container']}>
-				<input
-					className={classes.checkmark}
-					type='checkbox'
-					id={id}
-					checked={checked}
-					onChange={handleCheckboxChange}
-				/>
-				{label}
-			</label>
+		<div className='absolute top-3 right-9'>
+			<input
+				className='h-5 w-5 absolute cursor-pointer accent-pink-500'
+				type='checkbox'
+				id={id}
+				checked={checked}
+				onChange={handleCheckboxChange}
+			/>
 		</div>
 	)
 }
