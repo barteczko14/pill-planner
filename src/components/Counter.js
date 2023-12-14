@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import Button from './Button'
 import Checkbox from '../Checkbox'
 import { useMutation } from '@tanstack/react-query'
-import { queryClient, editCounterData } from '../util/http'
+import { queryClient, editData } from '../util/http'
 import ErrorBlock from './ErrorBlock'
 
 const Counter = ({ children, counterData }) => {
 	const [count, setCount] = useState(counterData)
 
 	const { mutate, isError } = useMutation({
-		mutationFn: editCounterData,
+		mutationFn: editData,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['counters'] })
 		},
@@ -18,13 +18,13 @@ const Counter = ({ children, counterData }) => {
 	const increment = () => {
 		const newCount = count + 1
 		setCount(newCount)
-		mutate({ path: children, count: newCount })
+		mutate({ path: 'counters', id: children, data: newCount })
 	}
 
 	const decrement = () => {
 		const newCount = count - 1
 		setCount(newCount)
-		mutate({ path: children, count: newCount })
+		mutate({ path: 'counters', id: children, data: newCount })
 	}
 	let content
 

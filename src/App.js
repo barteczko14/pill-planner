@@ -3,30 +3,43 @@ import Menu from './components/Menu'
 import ChartComponent from './ChartComponent'
 import Counter from './components/Counter'
 import LoadingPage from './components/LoadingPage'
-import { fetchCountersData } from './util/http'
+import { fetchCountersData, fetchCheckboxesData } from './util/http'
 import { useQuery } from '@tanstack/react-query'
 import ErrorBlock from './components/ErrorBlock'
 
 const App = () => {
-	const { data, isPending, isError } = useQuery({
+	const {
+		data: countersData,
+		isPending: countersIsPending,
+		isError: countersIsError,
+	} = useQuery({
 		queryKey: ['counters'],
 		queryFn: fetchCountersData,
 	})
 
+	// const {
+	// 	data: checkboxesData,
+	// 	isPending: checkboxesIsPending,
+	// 	isError: checkboxesIsError,
+	// } = useQuery({
+	// 	queryKey: ['checkboxes'],
+	// 	queryFn: fetchCheckboxesData,
+	// })
+
 	let content
 
-	if (isPending) {
+	if (countersIsPending) {
 		content = <LoadingPage></LoadingPage>
 	}
-	if (isError) {
+	if (countersIsError) {
 		content = <ErrorBlock title='Błąd' message='Nie udało się załadować danych' />
 	}
-	if (data) {
+	if (countersData) {
 		const daysOrder = ['poniedziałek', 'wtorek', 'środa', 'czwartek', 'piątek', 'sobota', 'niedziela']
 
 		const correctOrder = {}
 		daysOrder.forEach(day => {
-			correctOrder[day] = data[day]
+			correctOrder[day] = countersData[day]
 		})
 
 		content = (

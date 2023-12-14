@@ -14,11 +14,35 @@ export async function fetchCountersData() {
 	return countersData
 }
 
-export async function editCounterData({ path, count }) {
-	const response = await fetch(`https://pill-planner-default-rtdb.firebaseio.com/counters/${path}.json`, {
+export async function fetchCheckboxesData() {
+	const response = await fetch(`https://pill-planner-default-rtdb.firebaseio.com/checkboxes.json`)
+	if (!response.ok) {
+		const error = new Error('Błąd ładowania danych')
+		error.code = response.status
+		error.info = await response.json()
+		throw error
+	}
+	const checkboxesData = await response.json()
+	return checkboxesData
+}
+
+export async function fetchTimestampData() {
+	const response = await fetch(`https://pill-planner-default-rtdb.firebaseio.com/clickTimes.json`)
+	if (!response.ok) {
+		const error = new Error('Błąd ładowania danych')
+		error.code = response.status
+		error.info = await response.json()
+		throw error
+	}
+	const timestampData = await response.json()
+	return timestampData
+}
+
+export async function editData({ path, id, data }) {
+	const response = await fetch(`https://pill-planner-default-rtdb.firebaseio.com/${path}/${id}.json`, {
 		method: 'PUT',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(count),
+		body: JSON.stringify(data),
 	})
 
 	if (!response.ok) {
