@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Button from './Button'
-import Checkbox from '../Checkbox'
+import Checkbox from './Checkbox'
 import { useMutation } from '@tanstack/react-query'
 import { queryClient, editData } from '../util/http'
 import ErrorBlock from './ErrorBlock'
 
-const Counter = ({ children, counterData }) => {
+const Counter = ({ counterData, day }) => {
 	const [count, setCount] = useState(counterData)
 
 	const { mutate, isError } = useMutation({
@@ -18,13 +18,13 @@ const Counter = ({ children, counterData }) => {
 	const increment = () => {
 		const newCount = count + 1
 		setCount(newCount)
-		mutate({ path: 'counters', id: children, data: newCount })
+		mutate({ path: 'counters', id: day, data: newCount })
 	}
 
 	const decrement = () => {
 		const newCount = count - 1
 		setCount(newCount)
-		mutate({ path: 'counters', id: children, data: newCount })
+		mutate({ path: 'counters', id: day, data: newCount })
 	}
 	let content
 
@@ -33,8 +33,8 @@ const Counter = ({ children, counterData }) => {
 	} else {
 		content = (
 			<div className='w-52 relative flex flex-col bg-[#f8c8e0] items-center m-2 rounded-lg border border-[#ec4899]'>
-				<h1 className='text-lg'>{children}</h1>
-				<Checkbox id={children} />
+				<h1 className='text-lg'>{day}</h1>
+				<Checkbox id={day} />
 				<p className='font-medium text-lg'>{count} mg</p>
 				<div className='flex'>
 					<Button onClick={decrement}>-</Button>

@@ -3,7 +3,7 @@ import Menu from './components/Menu'
 import ChartComponent from './ChartComponent'
 import Counter from './components/Counter'
 import LoadingPage from './components/LoadingPage'
-import { fetchCountersData, fetchCheckboxesData } from './util/http'
+import { fetchCountersData } from './util/http'
 import { useQuery } from '@tanstack/react-query'
 import ErrorBlock from './components/ErrorBlock'
 
@@ -16,15 +16,6 @@ const App = () => {
 		queryKey: ['counters'],
 		queryFn: fetchCountersData,
 	})
-
-	// const {
-	// 	data: checkboxesData,
-	// 	isPending: checkboxesIsPending,
-	// 	isError: checkboxesIsError,
-	// } = useQuery({
-	// 	queryKey: ['checkboxes'],
-	// 	queryFn: fetchCheckboxesData,
-	// })
 
 	let content
 
@@ -47,9 +38,7 @@ const App = () => {
 				<Menu counterData={correctOrder}></Menu>
 				<div className='flex flex-wrap justify-center'>
 					{Object.entries(correctOrder).map(([day, count]) => (
-						<Counter key={day} counterData={count}>
-							{day}
-						</Counter>
+						<Counter key={day} counterData={count} day={day}></Counter>
 					))}
 				</div>
 				<ChartComponent></ChartComponent>

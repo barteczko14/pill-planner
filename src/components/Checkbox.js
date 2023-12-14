@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { queryClient, editData, fetchCheckboxesData, fetchTimestampData } from './util/http'
+import { queryClient, editData, fetchCheckboxesData, fetchTimestampData } from '../util/http'
 
 const Checkbox = ({ id }) => {
 	const { mutate: mutateCheckbox } = useMutation({
