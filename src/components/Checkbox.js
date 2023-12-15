@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { queryClient, editData, fetchCheckboxesData, fetchTimestampData } from '../util/http'
+import { queryClient, editData, fetchData } from '../util/http'
 
 const Checkbox = ({ id }) => {
 	const { mutate: mutateCheckbox } = useMutation({
@@ -19,12 +19,12 @@ const Checkbox = ({ id }) => {
 
 	const { data: checkboxesData } = useQuery({
 		queryKey: ['checkbox'],
-		queryFn: fetchCheckboxesData,
+		queryFn: ({ signal }) => fetchData({ signal, path: 'checkboxes' }),
 	})
 
 	const { data: timestampData } = useQuery({
 		queryKey: ['timestamp'],
-		queryFn: fetchTimestampData,
+		queryFn: ({ signal }) => fetchData({ signal, path: 'clickTimes' }),
 	})
 
 	const handleCheckboxChange = async event => {

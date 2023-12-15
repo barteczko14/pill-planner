@@ -32,7 +32,7 @@ const Counter = ({ counterData, day }) => {
 		content = <ErrorBlock title='Błąd' message='Nie udało się załadować danych' />
 	} else {
 		content = (
-			<div className='w-52 relative flex flex-col bg-[#f8c8e0] items-center m-2 rounded-lg border border-[#ec4899]'>
+			<div className='w-10/12 sm:w-60 relative flex flex-col bg-gradient-to-r from-[#f8c8e0] to-[#f888c0] shadow-lg items-center m-2 rounded-lg border border-[#ec4899]'>
 				<h1 className='text-lg'>{day}</h1>
 				<Checkbox id={day} />
 				<p className='font-medium text-lg'>{count} mg</p>
