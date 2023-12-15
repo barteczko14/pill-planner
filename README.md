@@ -5,10 +5,6 @@ Empower your health journey with our cutting-edge disease progression tracking a
 ### Check app at: https://pill-planner.netlify.app/
 
 
-![obraz](https://github.com/barteczko14/cars-app-dev/blob/main/cars_app_1.png)
+![obraz](https://github.com/barteczko14/pill-planner/blob/master/pill-planner_1.png)
 
 
-![obraz](https://github.com/barteczko14/cars-app-dev/blob/main/cars_app_2.png)
-
-
-![obraz](https://github.com/barteczko14/cars-app-dev/blob/main/cars_app_3.png)
