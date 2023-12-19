@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient, editData, fetchData } from '../util/http'
 
@@ -33,20 +33,29 @@ const Checkbox = ({ id }) => {
 		mutateTimestamp({ path: 'clickTimes', id: id, data: Date.now() })
 	}
 
+	useEffect(() => {
+		const intervalId = setInterval(() => {
+			check24Hours()
+		}, 10000)
+
+		return () => clearInterval(intervalId)
+	}, [id, timestampData])
+
 	const check24Hours = () => {
 		if (timestampData[id] ?? false) {
 			const now = new Date()
 			const clickDate = new Date(timestampData[id])
 			clickDate.setDate(clickDate.getDate() + 3)
-			if (now >= clickDate) {
+
+			if (now > clickDate) {
 				mutateCheckbox({ path: 'checkboxes', id: id, data: false })
+				mutateTimestamp({ path: 'clickTimes', id: id, data: Date.now() })
 			}
 		}
 	}
 
 	let content = ''
 	if (checkboxesData && timestampData) {
-		check24Hours()
 		content = (
 			<div className='absolute top-3 right-9'>
 				<input

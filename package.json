@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "apexcharts": "^3.41.0",
     "firebase": "^9.22.1",
+    "framer-motion": "^10.16.16",
     "mdb-react-ui-kit": "^6.1.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
