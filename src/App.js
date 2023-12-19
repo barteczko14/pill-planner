@@ -6,12 +6,23 @@ import LoadingPage from './components/LoadingPage'
 import { fetchData } from './util/http'
 import { useQuery } from '@tanstack/react-query'
 import ErrorBlock from './components/ErrorBlock'
-
+import { motion } from 'framer-motion'
 const App = () => {
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['counters'],
 		queryFn: ({ signal }) => fetchData({ signal, path: 'counters' }),
 	})
+
+	const container = {
+		hidden: { opacity: 0, scale: 0.5 },
+		show: {
+			opacity: 1,
+			scale: 1,
+			transition: {
+				staggerChildren: 0.1,
+			},
+		},
+	}
 
 	let content
 
@@ -32,11 +43,11 @@ const App = () => {
 		content = (
 			<>
 				<Menu counterData={correctOrder}></Menu>
-				<div className='flex flex-wrap justify-center'>
+				<motion.div variants={container} initial='hidden' animate='show' className='flex flex-wrap justify-center'>
 					{Object.entries(correctOrder).map(([day, count]) => (
 						<Counter key={day} counterData={count} day={day}></Counter>
 					))}
-				</div>
+				</motion.div>
 				<ChartComponent></ChartComponent>
 			</>
 		)

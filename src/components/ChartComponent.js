@@ -6,6 +6,7 @@ import ErrorBlock from './ErrorBlock'
 import LoadingIndicator from './LoadingIndicator'
 import Form from './Form'
 
+
 const ChartComponent = () => {
 	const [date, setDate] = useState('')
 	const [value, setValue] = useState('')

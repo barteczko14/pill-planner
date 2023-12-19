@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from './Button'
-
+import { motion } from 'framer-motion'
 const Form = ({
 	date,
 	setValueHandler,
@@ -13,7 +13,12 @@ const Form = ({
 	dateToDelete,
 }) => {
 	return (
-		<div className='py-10 flex flex-col justify-center'>
+		<motion.div
+			initial={{ y: 300 }}
+			animate={{ y: 0 }}
+			bounce
+			transition={{ duration: 0.5, type: 'spring' }}
+			className='py-10 flex flex-col justify-center'>
 			<div className='relative py-3 sm:mx-auto'>
 				<div className='absolute inset-0 bg-gradient-to-r from-[#f8c8e0] to-[#ec4899] shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl'></div>
 				<div className='relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8'>
@@ -73,7 +78,7 @@ const Form = ({
 					</div>
 				</div>
 			</div>
-		</div>
+		</motion.div>
 	)
 }
 
