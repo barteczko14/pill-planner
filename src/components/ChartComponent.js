@@ -11,19 +11,16 @@ const ChartComponent = () => {
 	const [date, setDate] = useState('')
 	const [value, setValue] = useState('')
 
-	// Pobieranie danych
 	const { data, isPending, isError } = useQuery({
 		queryKey: ['chart'],
 		queryFn: ({ signal }) => fetchData({ signal, path: 'chartData' }),
 	})
 
-	// Mutacja: Dodawanie
 	const { mutate: addMutate } = useMutation({
 		mutationFn: addData,
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['chart'] }),
 	})
 
-	// Mutacja: Usuwanie
 	const { mutate: deleteMutate } = useMutation({
 		mutationFn: deleteData,
 		onSuccess: () => queryClient.invalidateQueries({ queryKey: ['chart'] }),
@@ -51,12 +48,42 @@ const ChartComponent = () => {
 			toolbar: { show: false },
 			fontFamily: 'Inter, sans-serif',
 			dropShadow: { enabled: true, top: 8, blur: 10, opacity: 0.1, color: '#ea4c89' },
+			// PEŁNA POLSKA LOKALIZACJA
+			locales: [{
+				name: 'pl',
+				options: {
+					months: ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'],
+					shortMonths: ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'],
+					days: ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'],
+					shortDays: ['Ndz', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'],
+					toolbar: {
+						download: 'Pobierz',
+						selection: 'Wybór',
+						zoom: 'Powiększenie',
+						zoomIn: 'Powiększ',
+						zoomOut: 'Pomniejsz',
+						pan: 'Przesuwanie',
+						reset: 'Resetuj'
+					}
+				}
+			}],
+			defaultLocale: 'pl'
 		},
 		stroke: { curve: 'smooth', width: 4 },
 		markers: { size: 5, colors: ['#ffffff'], strokeColors: '#ea4c89', strokeWidth: 3 },
-		xaxis: { type: 'datetime', labels: { style: { colors: '#94a3b8' } } },
+		xaxis: { 
+			type: 'datetime', 
+			labels: { 
+				style: { colors: '#94a3b8' },
+				datetimeFormatter: { year: 'yyyy', month: 'MMM \'yy', day: 'dd MMM', hour: 'HH:mm' }
+			} 
+		},
 		colors: ['#ea4c89'],
-		yaxis: { min: 0.5, max: 4, labels: { style: { colors: '#94a3b8' } } },
+		yaxis: { 
+			min: 0.5, 
+			max: 4, 
+			labels: { style: { colors: '#94a3b8' } } 
+		},
 		grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
 		annotations: {
 			yaxis: [{
@@ -64,6 +91,11 @@ const ChartComponent = () => {
 				label: { text: 'NORMA', style: { color: '#ea4c89', background: '#fff', fontWeight: 900 } }
 			}],
 		},
+		// POLSKIE FORMATOWANIE DATY W DYMKU (TOOLTIP)
+		tooltip: {
+			x: { format: 'dd.MM.yyyy' },
+			theme: 'light'
+		}
 	}), [])
 
 	const series = useMemo(() => {
@@ -83,16 +115,8 @@ const ChartComponent = () => {
 
 	return (
 		<div className='max-w-4xl mx-auto px-4 pb-10'>
-			{/* 1. Formularz dodawania */}
-			<Form 
-				date={date} 
-				setValueHandler={setValue} 
-				updateData={updateData} 
-				value={value} 
-				setDateHandler={setDate} 
-			/>
+			<Form date={date} setValueHandler={setValue} updateData={updateData} value={value} setDateHandler={setDate} />
 
-			{/* 2. Wykres (pokazuje się tylko jeśli są dane) */}
 			{sortedEntries.length > 0 ? (
 				<div className='bg-white rounded-[2rem] p-4 md:p-8 shadow-sm border border-pink-50 my-6'>
 					<ApexCharts options={chartOptions} series={series} type='line' height={300} />
@@ -103,7 +127,6 @@ const ChartComponent = () => {
 				</div>
 			)}
 
-			{/* 3. Historia wpisów z przewijaniem */}
 			<div className='mt-10 bg-white rounded-[2.5rem] shadow-sm border border-pink-50 overflow-hidden'>
 				<div className='bg-gray-50/50 px-8 py-4 border-b border-gray-100 flex justify-between items-center'>
 					<h3 className='text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]'>
