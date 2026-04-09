@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useCallback } from 'react' // Usunięto useState
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { queryClient, editData, fetchData } from '../util/http'
 
@@ -33,16 +33,9 @@ const Checkbox = ({ id }) => {
 		mutateTimestamp({ path: 'clickTimes', id: id, data: Date.now() })
 	}
 
-	useEffect(() => {
-		const intervalId = setInterval(() => {
-			check24Hours()
-		}, 10000)
-
-		return () => clearInterval(intervalId)
-	}, [id, timestampData])
-
-	const check24Hours = () => {
-		if (timestampData[id] ?? false) {
+	// Owinięcie funkcji w useCallback, aby Netlify nie zgłaszało błędów zależności
+	const check24Hours = useCallback(() => {
+		if (timestampData && timestampData[id]) {
 			const now = new Date()
 			const clickDate = new Date(timestampData[id])
 			clickDate.setDate(clickDate.getDate() + 3)
@@ -52,9 +45,17 @@ const Checkbox = ({ id }) => {
 				mutateTimestamp({ path: 'clickTimes', id: id, data: Date.now() })
 			}
 		}
-	}
+	}, [id, timestampData, mutateCheckbox, mutateTimestamp]);
 
-	let content = ''
+	useEffect(() => {
+		const intervalId = setInterval(() => {
+			check24Hours()
+		}, 10000)
+
+		return () => clearInterval(intervalId)
+	}, [check24Hours]) // Teraz zależnością jest stabilna funkcja check24Hours
+
+	let content = null; // Zmieniono na null (dobra praktyka w React)
 	if (checkboxesData && timestampData) {
 		content = (
 			<div className='absolute top-3 right-9'>
@@ -62,7 +63,7 @@ const Checkbox = ({ id }) => {
 					className='h-5 w-5 absolute cursor-pointer accent-pink-500'
 					type='checkbox'
 					id={id}
-					checked={checkboxesData[id]}
+					checked={checkboxesData[id] || false} // Dodano fallback
 					onChange={handleCheckboxChange}
 				/>
 			</div>
