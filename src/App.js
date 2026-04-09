@@ -14,13 +14,12 @@ const App = () => {
 		queryFn: ({ signal }) => fetchData({ signal, path: 'counters' }),
 	})
 
-	// Animacja wejścia dla całej siatki kart
 	const containerVariants = {
 		hidden: { opacity: 0 },
 		show: {
 			opacity: 1,
 			transition: {
-				staggerChildren: 0.1, // Karty pojawiają się jedna po drugiej
+				staggerChildren: 0.1,
 			},
 		},
 	}
@@ -32,7 +31,7 @@ const App = () => {
 	if (isError) {
 		return (
 			<div className='min-h-screen bg-gray-50 flex items-center justify-center p-4'>
-				<ErrorBlock title='Błąd połączenia' message='Nie udało się pobrać Twoich danych. Sprawdź połączenie z internetem.' />
+				<ErrorBlock title='Błąd połączenia' message='Nie udało się załadować danych.' />
 			</div>
 		)
 	}
@@ -49,16 +48,24 @@ const App = () => {
 
 		return (
 			<div className='min-h-screen bg-[#fafafa] pb-20'>
-				{/* Górny panel ze statystykami */}
-				<Menu counterData={correctOrder} />
+				<main className='max-w-7xl mx-auto px-4 pt-8'>
+					
+					{/* 1. Wykres i Formularz (najpierw) */}
+					<section className='mb-12'>
+						<ChartComponent />
+					</section>
 
-				<main className='max-w-7xl mx-auto px-4'>
-					{/* Sekcja kart - RESPONSYWNY GRID */}
+					{/* 2. Statystyki: Suma i Średnia */}
+					<section className='mb-8'>
+						<Menu counterData={correctOrder} />
+					</section>
+
+					{/* 3. Karty dni tygodnia */}
 					<motion.div 
 						variants={containerVariants} 
 						initial='hidden' 
 						animate='show' 
-						className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12'
+						className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6'
 					>
 						<AnimatePresence>
 							{Object.entries(correctOrder).map(([day, count]) => (
@@ -67,13 +74,8 @@ const App = () => {
 						</AnimatePresence>
 					</motion.div>
 
-					{/* Sekcja wykresu i formularza */}
-					<div className='mt-16'>
-						<ChartComponent />
-					</div>
 				</main>
 
-				{/* Stopka z nazwą aplikacji */}
 				<footer className='text-center py-10'>
 					<p className='text-[10px] font-black uppercase tracking-[0.5em] text-gray-300'>
 						Pill Planner v2.0
