@@ -35,7 +35,7 @@ const ChartComponent = () => {
 		
 		const sanitizedDate = date.replace(/[.#$/[\]]/g, '_')
 		const newData = {
-			...(data || {}), // Zabezpieczenie, jeśli data jest null
+			...(data || {}), 
 			[sanitizedDate]: value,
 		}
 		addMutate(newData)
@@ -69,10 +69,41 @@ const ChartComponent = () => {
 				defaultLocale: 'pl'
 			},
 			stroke: { curve: 'smooth', width: 4 },
-			xaxis: { type: 'datetime' },
+			// PRZYWRÓCONE MARKERY (PUNKTY)
+			markers: {
+				size: 5,
+				colors: ['#ffffff'],
+				strokeColors: '#ea4c89',
+				strokeWidth: 3,
+				hover: { size: 7 }
+			},
+			xaxis: { 
+				type: 'datetime',
+				labels: { style: { colors: '#94a3b8' } }
+			},
 			colors: ['#ea4c89'],
-			yaxis: { min: 0.5, max: 4 },
-			grid: { borderColor: '#f1f5f9', strokeDashArray: 4 }
+			yaxis: { 
+				min: 0.5, 
+				max: 4,
+				labels: { style: { colors: '#94a3b8' } }
+			},
+			grid: { borderColor: '#f1f5f9', strokeDashArray: 4 },
+			// PRZYWRÓCONE I WZMOCNIONE PASMO NORMY
+			annotations: {
+				yaxis: [{
+					y: 2.0,
+					y2: 3.5,
+					borderColor: 'transparent',
+					fillColor: '#ea4c89',
+					opacity: 0.25, // Mocniejszy róż, żeby był widoczny
+					label: {
+						text: 'NORMA',
+						position: 'left',
+						style: { color: '#ea4c89', background: '#fff', fontWeight: 900 }
+					}
+				}],
+			},
+			tooltip: { theme: 'light' }
 		}
 	}, [])
 
@@ -90,16 +121,14 @@ const ChartComponent = () => {
 	if (isPending) return <LoadingIndicator />
 	if (isError) return <ErrorBlock title='Błąd' message='Nie udało się załadować danych' />
 
-	// Sprawdzamy, czy są jakiekolwiek dane do wyświetlenia na wykresie
 	const hasData = data && Object.keys(data).length > 0
 
 	return (
 		<div className='max-w-4xl mx-auto px-4'>
-			{/* Wykres - renderuj tylko jeśli są dane */}
 			{hasData ? (
 				<div className='bg-white rounded-[2rem] p-4 md:p-8 shadow-sm border border-pink-50 my-6'>
 					<div className='flex items-center justify-between mb-6 px-2'>
-						<h2 className='text-lg font-bold text-gray-800'>Historia wyników</h2>
+						<h2 className='text-lg font-bold text-gray-800 uppercase tracking-wider'>Historia wyników</h2>
 					</div>
 					<div className='w-full'>
 						<ApexCharts 
@@ -111,16 +140,19 @@ const ChartComponent = () => {
 					</div>
 				</div>
 			) : (
-				<div className='bg-white rounded-[2rem] p-10 shadow-sm border border-dashed border-pink-200 my-6 text-center text-gray-400 font-medium'>
-					Brak danych do wyświetlenia. Dodaj pierwszy wynik poniżej!
+				/* Stan pusty z instrukcją */
+				<div className='bg-white rounded-[2rem] p-10 shadow-sm border-2 border-dashed border-pink-100 my-6 text-center transition-all'>
+					<div className='text-4xl mb-4'>📈</div>
+					<p className='text-gray-400 font-medium'>
+						Twoja historia jest pusta. <br/> Dodaj pierwszy wynik INR w formularzu poniżej!
+					</p>
 				</div>
 			)}
 
-			{/* Formularz - TERAZ ZAWSZE WIDOCZNY */}
 			<Form
 				date={date}
 				setValueHandler={setValue}
-				chartData={data || {}} // Przekazujemy pusty obiekt zamiast null
+				chartData={data || {}} 
 				updateData={updateData}
 				deleteDataHandler={deleteDataHandler}
 				setDataToDeleteHandler={setDateToDelete}
