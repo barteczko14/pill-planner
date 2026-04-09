@@ -5,7 +5,7 @@ const Menu = ({ counterData }) => {
 
 	return (
 		<div className='flex justify-around m-4 p-4 font-medium'>
-			<p>{`Suma : ${sum} (mg)`}</p>
+			<p>{`Suma: ${sum} (mg)`}</p>
 			<p>{`Średnia: ${(sum / 7).toFixed(2)} (mg)`}</p>
 		</div>
 	)
